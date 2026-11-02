@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Knapsack Problem</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head><body>
+<div id="sp"></div>
+<nav><div class="nb"><a class="logo" href="#home">Knapsack Lab</a>
+<div class="links" id="links"><a href="#home">Home</a><a href="#learn">Learn</a><a href="#types">Types</a><a href="#simulator">Simulator</a><a href="#algorithms">Algorithms</a><a href="#applications">Applications</a><a href="#challenge">Challenge</a><a href="#quiz">Quiz</a><a href="#references">References</a></div>
+<span id="prog" title="Sections you have visited"></span>
+<button class="ghost sm" id="theme" aria-label="Toggle dark mode">Dark</button>
+<button class="ghost sm" id="menu" aria-label="Menu">Menu</button></div></nav>
+
+<section id="home">
+<div>
+<h1>THE KNAPSACK PROBLEM</h1>
+<p class="sub">How do we maximize value with limited resources?</p>
+<p>An interactive journey into optimization, algorithms, and intelligent decision-making.</p>
+<div class="btns"><a href="#learn"><button>Explore the Problem</button></a><a href="#simulator"><button class="ghost">Try the Simulator</button></a></div>
+<div class="info"><b>S. B. Jain Institute of Technology, Management &amp; Research, Nagpur</b><br>Department of Computer Science &amp; Engineering (Data Science)<br>Name: Pranjali Gavane &nbsp;|&nbsp; USN: CD24032<br>Subject: Design and Analysis of Algorithms</div>
+</div>
+<div class="stage" aria-hidden="true">
+<span class="fl" style="left:4%;top:6%">📚</span><span class="fl" style="right:6%;top:2%;animation-delay:1s">💻</span><span class="fl" style="left:0;top:48%;animation-delay:2s">🪙</span><span class="fl" style="right:2%;top:50%;animation-delay:.5s">🎧</span><span class="fl" style="left:20%;top:78%;animation-delay:1.5s">📷</span>
+<div class="bag"><div class="in" id="hbag"></div><div class="pk"></div></div>
+<div class="meter"><div class="bar"><i id="hbar"></i></div><span id="htxt"></span></div>
+</div></section>
+
+<section id="learn" class="rv"><h2>What are we actually solving?</h2>
+<p>The Knapsack Problem is a <span class="tip" tabindex="0" data-tip="Choosing the best option from a huge set of possible combinations.">combinatorial optimization</span> problem. You get a collection of items, each with a weight and a value, and a bag that can only carry so much. Pick the items that give the highest total value without going over the weight limit.</p>
+<div class="card"><h3>Pack the bag yourself</h3><p class="why">Tap an item to put it in. Tap again to take it out. Capacity is 10.</p>
+<div class="items" id="ldemo"></div>
+<div class="cnt"><div>Total weight<br><b id="lw">0</b> / <span id="lc">10</span></div><div>Total value<br><b id="lv">0</b></div></div>
+<div class="bar"><i id="lbar"></i></div><div class="warn" id="lwarn"></div>
+<p class="why">Why is this optimization? There are 2<sup>n</sup> ways to choose from n items, and most of them are either too heavy or leave value on the table. We want the single best one, not just any one that fits.</p></div></section>
+
+<section id="types" class="rv"><h2>Two flavours of the same idea</h2>
+<div class="seg" role="tablist"><button class="on" id="m01">0/1 Knapsack</button><button id="mfr">Fractional Knapsack</button></div>
+<div class="grid g2"><div class="card"><h3>0/1 Knapsack</h3><p>Every item is taken whole or left behind. It cannot be cut. Solved with <span class="tip" tabindex="0" data-tip="Break a problem into overlapping smaller problems and store their answers.">Dynamic Programming</span> or <span class="tip" tabindex="0" data-tip="Explore choices as a tree and skip branches that cannot beat the best answer found so far.">Branch and Bound</span>. The goal is the highest value within capacity.</p><div class="demo"><div class="box b1"></div><div class="box b2"></div></div></div>
+<div class="card"><h3>Fractional Knapsack</h3><p>Items can be split, so you can take part of one. The <span class="tip" tabindex="0" data-tip="Always make the choice that looks best right now.">Greedy Algorithm</span> works: sort by value-to-weight ratio and fill the bag in that order.</p><div class="demo"><div class="sl"></div><div class="sl s2"></div></div></div></div>
+<div class="card" style="margin-top:1rem"><h3 id="tt">Same items, capacity 10</h3><div id="tbody"></div><p class="why" id="tsum"></p></div></section>
+
+<section id="simulator" class="rv"><h2>The simulator</h2>
+<p>Change anything you like. The calculation runs the real 0/1 dynamic programming algorithm on your numbers.</p>
+<div class="card">
+<div class="tools"><label>Capacity <input type="number" id="cap" min="1" max="40"></label><button class="ghost sm" id="addI">Add item</button><button class="ghost sm" id="rndI">Random items</button><button class="ghost sm" id="poster">Load poster example</button><button class="ghost sm" id="rst">Reset</button></div>
+<div id="rows"></div>
+<p class="why">Tick the box on the left to build your own combination. Capacity is limited to 40 and items to 12 so the DP table stays readable.</p>
+<button id="calc">Calculate Optimal Solution</button> <span id="ld"></span>
+<div id="res" style="margin-top:1rem"></div></div>
+
+<h2 id="dp" style="margin-top:3rem">Dynamic programming, one cell at a time</h2>
+<div class="grid g2">
+<div class="step" style="background:var(--pink)"><b>Step 1: Define the subproblem</b><code>dp[i][w] = best value using the first i items with capacity w</code></div>
+<div class="step" style="background:var(--blue)"><b>Step 2: Recurrence relation</b><code>if weight[i] &gt; w:
+  dp[i][w] = dp[i-1][w]
+otherwise:
+  dp[i][w] = max( dp[i-1][w],
+                  value[i] + dp[i-1][w-weight[i]] )</code></div>
+<div class="step" style="background:var(--green)"><b>Step 3: Initialization</b><code>dp[0][w] = 0
+dp[i][0] = 0</code></div>
+<div class="step" style="background:var(--org)"><b>Step 4: Final result</b><code>answer = dp[n][W]
+n = number of items, W = capacity</code></div></div>
+<div class="card" style="margin-top:1rem">
+<div class="tools"><button class="sm" id="dpPrev">Back</button><button class="sm" id="dpPlay">Play animation</button><button class="sm" id="dpNext">Forward</button><label>Speed <select id="dpSpd"><option value="900">Slow</option><option value="400" selected>Normal</option><option value="80">Fast</option></select></label><input type="range" id="dpSl" min="0" value="0" style="flex:1;min-width:120px"><span id="dpSt" class="why"></span></div>
+<div class="expl" id="dpEx"></div><div class="tw"><table class="dpt" id="dpT"></table></div>
+<p class="why">Yellow is the cell being computed. Orange cells are the two it looks at. A green outline marks the final answer.</p></div></section>
+
+<section id="algorithms" class="rv"><h2>Three ways to attack it</h2>
+<div class="grid g3">
+<div class="card" style="background:var(--pink)"><h3>Brute Force</h3><p>Try every subset and keep the best one that fits.</p><p><b>Good:</b> simple and always correct.<br><b>Bad:</b> explodes quickly as items grow.</p><span class="pill y">Optimal</span> <b>O(2ⁿ)</b></div>
+<div class="card" style="background:var(--green)"><h3>Greedy Algorithm</h3><p>Sort by value-to-weight ratio, add whatever fits.</p><p><b>Good:</b> very fast, exact for the fractional version.<br><b>Bad:</b> can miss the best answer for 0/1.</p><span class="pill n">Not optimal for 0/1</span> <b>O(n log n)</b></div>
+<div class="card" style="background:var(--blue)"><h3>Dynamic Programming</h3><p>Build answers for smaller bags and items, then combine them.</p><p><b>Good:</b> exact and polynomial in n and W.<br><b>Bad:</b> needs a table, slow when W is huge.</p><span class="pill y">Optimal</span> <b>O(nW)</b></div></div>
+<div class="card" style="margin-top:1rem"><h3>How they handle your simulator items</h3><div id="race"></div><p class="why">Work counted by actually running each method: subsets checked, items examined, and table cells filled.</p></div>
+<div class="card tw" style="margin-top:1rem"><table class="ct"><tr><th>Aspect</th><th>0/1 Knapsack</th><th>Fractional Knapsack</th></tr>
+<tr><td>Item Division</td><td>Not allowed</td><td>Allowed</td></tr>
+<tr><td>Solution Technique</td><td>Dynamic Programming / Branch and Bound</td><td>Greedy Algorithm</td></tr>
+<tr><td>Time Complexity</td><td>O(nW) for standard DP</td><td>O(n log n) for greedy sorting</td></tr>
+<tr><td>Optimality</td><td>Optimal solution</td><td>Optimal solution</td></tr></table></div></section>
+
+<section id="applications" class="rv"><h2>Where this shows up</h2>
+<div class="grid g3" id="apps"></div></section>
+
+<section id="challenge" class="rv"><h2>Pack your bag!</h2>
+<p>You are heading off on a trip and your luggage can hold <b>10 kg</b>. Choose what comes along. Value is how much you would miss the item.</p>
+<div class="card"><div class="items" id="cItems"></div>
+<div class="cnt"><div>Weight<br><b id="cw">0</b> / 10</div><div>Value<br><b id="cv">0</b></div></div>
+<div class="bar"><i id="cbar"></i></div><div class="warn" id="cwarn"></div>
+<button id="cGo">Submit my bag</button> <button class="ghost" id="cRe">Restart</button><div id="cRes"></div></div></section>
+
+<section id="quiz" class="rv"><h2>Knowledge check</h2><div class="card" id="qz"></div></section>
+
+<footer id="references" class="rv"><h2>References</h2><ol>
+<li>Cormen, T. H., Leiserson, C. E., Rivest, R. L., and Stein, C. (2009). Introduction to Algorithms. MIT Press.</li>
+<li>GeeksforGeeks. 0/1 Knapsack Problem.</li>
+<li>Wikipedia. Dynamic Programming.</li>
+<li>TutorialsPoint. Knapsack Problem Applications.</li></ol>
+<p class="why">Prepared by Pranjali Gavane (CD24032), Design and Analysis of Algorithms, Session 2026-27.</p></footer>
+<button id="top" aria-label="Back to top">Up</button>
+
+<script src="script.js"></script></body></html>
